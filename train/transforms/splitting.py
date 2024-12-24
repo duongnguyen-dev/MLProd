@@ -4,37 +4,28 @@ from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import TomekLinks
 import pandas as pd
 
-def stratified_splitting(df, 
-                         train_size: float=0.8, 
-                         test_size: float=0.1, 
-                         val_size: float=0.1,
-                         random_state=42
-                        ):
+def split_dataset(X, y, train_size: float=0.8, test_size: float=0.1, val_size: float=0.1, random_state=42):
     """
-        Split the dataset to train, test, and val sets using Stratified Sampling method
+        Split features (X) and target (y) into train, test, and val sets.
         Arguments:
-            - df: Dataset
-            - train_size: Size of training set, the default size 80% of total dataset size
-            - test_size: Size of test set, the default size 10% of total dataset size
-            - val_size: Size of val set, the default size 10% of total dataset size
-            - random_state
-    """
-
-    train_df, temp_df = train_test_split(df, test_size=test_size + val_size, stratify=df["loan_status"], random_state=random_state)
-    test_df, val_df = train_test_split(temp_df, test_size=0.5, stratify=temp_df["loan_status"], random_state=random_state)
-
-    return train_df, test_df, val_df
-
-def over_splitting(df, train_size: float=0.8, test_size: float=0.1, val_size: float=0.1, target_column="loan_status", random_state=42):
-    """
-        Perform oversampling by duplicating samples of the minority class and splitting into train, test, and val.
-        Arguments:
-            - df: Dataset
+            - X: Features
+            - y: Target labels
             - train_size: Training set proportion
             - test_size: Test set proportion
             - val_size: Validation set proportion
-            - target_column: Target column to balance
             - random_state
+    """
+    X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=test_size + val_size, random_state=random_state)
+    X_test, X_val, y_test, y_val = train_test_split(X_temp, y_temp, test_size=0.5, random_state=random_state)
+
+    return (X_train, y_train), (X_test, y_test), (X_val, y_val)
+
+def over_splitting(df, target_column="loan_status", random_state=42):
+    """
+        Perform oversampling by duplicating samples of the minority class.
+        Arguments:
+            - df: Dataset
+            - target_column: Target column to balance
     """
     majority_class = df[df[target_column] == df[target_column].value_counts().idxmax()]
     minority_class = df[df[target_column] != df[target_column].value_counts().idxmax()]
@@ -45,37 +36,29 @@ def over_splitting(df, train_size: float=0.8, test_size: float=0.1, val_size: fl
                                           random_state=random_state)
 
     balanced_df = pd.concat([majority_class, minority_class_oversampled])
-    return stratified_splitting(balanced_df, train_size, test_size, val_size, random_state)
+    X = balanced_df.drop(columns=[target_column])
+    y = balanced_df[target_column]
+    return split_dataset(X, y, random_state=random_state)
 
-def smote_splitting(df, train_size: float=0.8, test_size: float=0.1, val_size: float=0.1, target_column="loan_status", random_state=42):
+def smote_splitting(df, target_column="loan_status", random_state=42):
     """
-        Perform oversampling using SMOTE and splitting into train, test, and val.
+        Perform oversampling using SMOTE.
         Arguments:
             - df: Dataset
-            - train_size: Training set proportion
-            - test_size: Test set proportion
-            - val_size: Validation set proportion
             - target_column: Target column to balance
-            - random_state
     """
     smote = SMOTE(random_state=random_state)
     X = df.drop(columns=[target_column])
     y = df[target_column]
     X_smote, y_smote = smote.fit_resample(X, y)
+    return split_dataset(X_smote, y_smote, random_state=random_state)
 
-    balanced_df = pd.concat([X_smote, y_smote], axis=1)
-    return stratified_splitting(balanced_df, train_size, test_size, val_size, random_state)
-
-def under_splitting(df, train_size: float=0.8, test_size: float=0.1, val_size: float=0.1, target_column="loan_status", random_state=42):
+def under_splitting(df, target_column="loan_status", random_state=42):
     """
-        Perform undersampling by removing samples from the majority class and splitting into train, test, and val.
+        Perform undersampling by removing samples from the majority class.
         Arguments:
             - df: Dataset
-            - train_size: Training set proportion
-            - test_size: Test set proportion
-            - val_size: Validation set proportion
             - target_column: Target column to balance
-            - random_state
     """
     majority_class = df[df[target_column] == df[target_column].value_counts().idxmax()]
     minority_class = df[df[target_column] != df[target_column].value_counts().idxmax()]
@@ -86,24 +69,20 @@ def under_splitting(df, train_size: float=0.8, test_size: float=0.1, val_size: f
                                           random_state=random_state)
 
     balanced_df = pd.concat([majority_class_downsampled, minority_class])
-    return stratified_splitting(balanced_df, train_size, test_size, val_size, random_state)
+    X = balanced_df.drop(columns=[target_column])
+    y = balanced_df[target_column]
+    return split_dataset(X, y, random_state=random_state)
 
-def tomek_splitting(df, train_size: float=0.8, test_size: float=0.1, val_size: float=0.1, target_column="loan_status", random_state=42):
+def tomek_splitting(df, target_column="loan_status", random_state=42):
     """
-        Perform undersampling using Tomek Links and splitting into train, test, and val.
+        Perform undersampling using Tomek Links.
         Arguments:
             - df: Dataset
-            - train_size: Training set proportion
-            - test_size: Test set proportion
-            - val_size: Validation set proportion
             - target_column: Target column to balance
-            - random_state
     """
     X = df.drop(columns=[target_column])
     y = df[target_column]
 
     tomek = TomekLinks()
     X_resampled, y_resampled = tomek.fit_resample(X, y)
-
-    balanced_df = pd.concat([X_resampled, y_resampled], axis=1)
-    return stratified_splitting(balanced_df, train_size, test_size, val_size, random_state)
+    return split_dataset(X_resampled, y_resampled, random_state=random_state)
