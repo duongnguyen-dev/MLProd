@@ -1,0 +1,4 @@
+.env
+mlops_loan_approval_classification.egg-info
+
+/configs/__pycache__
