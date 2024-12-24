@@ -2,3 +2,5 @@
 mlops_loan_approval_classification.egg-info
 
 /configs/__pycache__
+/train/__pycache__
+/train/transforms/__pycache__
