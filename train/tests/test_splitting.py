@@ -1,2 +1,2 @@
-def stratified_splitting_test():
+# def stratified_splitting_test():
     
