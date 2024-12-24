@@ -5,3 +5,4 @@ fastapi==0.115.6
 seaborn==0.13.2
 minio==7.2.13
 findspark==2.0.1
+imbalanced-learn==0.10.1
