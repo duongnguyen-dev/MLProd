@@ -16,7 +16,7 @@ setup(
         "seaborn==0.13.2",
         "minio==7.2.13",
         "findspark==2.0.1"
-        "imbalanced-learn==0.10.1"
+        "imbalanced-learn==0.13.0"
     ],
     python_requires=">=3.10",
     classifiers=[
