@@ -15,5 +15,5 @@
         ```
 - **Step 2**: Install prerequisite packages
     ```
-    pip install requirements.txt
+    pip install -e .
     ```
