@@ -2,7 +2,7 @@
 
 This folder stores all notebooks for this classification problem, including: EDA, Feature Engineering, Training and Evaluation.
 
-**Feature Engineering:**
+**Feature Engineering / Feature Extraction / Data preparation:**
 - There are many feature engineering experiments that will be made on the data
     - **feature_engineering_1.ipynb** will cover the following:
         - *Stratifed sampling* to split data 
