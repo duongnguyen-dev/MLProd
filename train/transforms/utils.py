@@ -2,6 +2,8 @@ import matplotlib.pyplot as plt
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 
+from pyspark.ml.linalg import Vectors
+
 def find_categorical_cols(df):
     categorical_columns = [
         field.name for field in df.schema.fields if str(field.dataType) in ['StringType()', 'BooleanType()'] and field.name != "loan_status"
@@ -51,7 +53,7 @@ def cast_incorrect_column_type(df):
     for col in numerical_columns:
         if col in df.columns:
             # Use PySpark's cast function to convert the column type
-            df = df.withColumn(col, F.col(col).cast(T.FloatType()))
+            df = df.withColumn(col, F.col(col).cast(T.DoubleType()))
     
     return df
 

@@ -1,0 +1,116 @@
+version: '3.8'
+services:
+  airflow-webserver:
+    hostname: airflow
+    container_name: airflow
+    image: andrejunior/airflow-spark:latest
+    restart: always
+    networks:
+        - airflow
+    depends_on:
+        - postgres
+        - minio
+        - spark-master
+        - spark-worker
+    environment:   
+        - AIRFLOW__CORE__LOAD_EXAMPLES=False
+        - LOAD_EX=n
+        - EXECUTOR=Local    
+    volumes:
+        - airflow-data:/usr/local/airflow/data
+        - ./etl/dags:/usr/local/airflow/dags
+        - ./etl/applications:/usr/local/spark/applications            
+        - ./etl/assets:/usr/local/spark/assets     
+    ports:
+        - "8085:8080"
+    command: webserver
+    healthcheck:
+        test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+        interval: 30s
+        timeout: 30s
+        retries: 3
+
+  minio:
+    hostname: bucket
+    image: bitnami/minio:2024.12.18
+    container_name: bucket
+    env_file:
+      - .env
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - airflow
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://bucket:9000/minio/health/live"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+
+  postgres:
+    hostname: postgres
+    image: postgres:16-alpine
+    container_name: postgres
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    networks:
+      - airflow
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  
+  spark-master:
+    user: root
+    hostname: master
+    image: bitnami/spark:3.2.1
+    container_name: master
+    env_file:
+      - .env
+    ports:
+      - "8081:8080"
+      - "7077:7077"
+    networks:
+      - airflow
+    volumes:
+      - ./etl/applications:/usr/local/spark/applications
+      - ./etl/assets:/usr/local/spark/assets
+
+  spark-worker:
+    user: root
+    hostname: worker
+    image: bitnami/spark:3.2.1
+    container_name: worker
+    networks:
+        - airflow
+    environment:
+        - SPARK_MODE=worker
+        - SPARK_MASTER_URL=spark://master:7077
+        - SPARK_WORKER_MEMORY=1G
+        - SPARK_WORKER_CORES=1
+        - SPARK_RPC_AUTHENTICATION_ENABLED=no
+        - SPARK_RPC_ENCRYPTION_ENABLED=no
+        - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+        - SPARK_SSL_ENABLED=no
+    volumes:
+        - ./etl/applications:/usr/local/spark/applications            
+        - ./etl/assets/:/usr/local/spark/assets 
+    depends_on:
+        - spark-master
+
+volumes:
+  postgres_data:
+  minio_data:
+  airflow-data:
+
+networks:
+  airflow:
+    driver: bridge
