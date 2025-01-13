@@ -25,6 +25,10 @@
 ## 1. Data pipeline
 ### How to guide 📖
 #### 1.1. Overall data architecture
+<p align="center">
+  <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/overall_data_architecture.png" />
+</p>
+
 
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
