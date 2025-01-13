@@ -1,8 +1,8 @@
 # End-to-end Machine Learning system
 
 # Table of contents
-1. [Data pipeline]()
-   1. [Overall data architecture]()
+1. [Data pipeline](#1-data-pipeline)
+   1. [Overall data architecture](#11-overall-data-architecture)
    2. [Approach and concepts]()
        1. [Data source]()
        2. [Lake house]()
@@ -23,6 +23,8 @@
 3. Serving pipeline
 
 ## 1. Data pipeline
+### How to guide 📖
+#### 1.1. Overall data architecture
 
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
