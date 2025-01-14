@@ -84,15 +84,16 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    - For Ubuntu: https://cloud.google.com/sdk/docs/install#deb
    - For Windows: https://cloud.google.com/sdk/docs/install#windows
 - **Step 3**: Initialize the Google Cloud CLI
+  - Check if the Google Cloud CLI is installed successfully.
+   ``` bash
+   gcloud -v
+   ```
+   - Initialize gcloud by running
    ``` bash
    gcloud init
    Y
    ```
    - Pick you cloud project then type Enter.
-   - Check if the Google Cloud CLI is installed successfully.
-   ``` bash
-   gcloud -v
-   ```
 - **Step 4**: Install gke-cloud-auth-plugin
    ``` bash
    gcloud components install gke-gcloud-auth-plugin
@@ -101,7 +102,7 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    - Create your [service account](https://console.cloud.google.com/iam-admin/serviceaccounts), and select `Kubernetes Engine Admin` role therefore you will have full management of Kubernetes Cluster and their Kubernetes API object for your service account.
    - Create new key as json type for your service account. Download this json file and save it in terraform directory. Update `credentials` in `terraform/main.tf` with your json directory.
 - **Step 6**: Add permission for the project
-   - Go to [IAM](https://console.cloud.google.com/iam-admin/iam), click on `GRANT ACCESS`, then add new principals, this principal is your service account created in step 1.3. Finally, select `Owner` role.
+   - Go to [IAM](https://console.cloud.google.com/iam-admin/iam), click on `GRANT ACCESS`, then add new principals, this principal is your service account created in step 5. Finally, select `Owner` role.
 - **Step 7**: Installing [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 - **Step 8**: Using Terraform to create GKE cluster
    - Change the default value of variable `project_id` in `terraform/variables.tf` with your project id on Google Cloud. Then run the following command to create GKE cluster:
