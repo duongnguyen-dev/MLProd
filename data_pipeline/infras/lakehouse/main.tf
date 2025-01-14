@@ -11,7 +11,7 @@ terraform {
 // managing the infrastructure in GCP, this will
 // apply to all the resources in the project
 provider "google" {
-  credentials = "./true-oasis-438103-a2-ab08636e2322.json"
+  credentials = "./healthy-result-407107-a2dcc9ffff34.json" # Replace this with you key .json file
   project     = var.project_id
   region      = var.region
 }
@@ -20,28 +20,27 @@ provider "google" {
 resource "google_container_cluster" "mlprod-cluster" {
   name = "${var.project_id}-mlprod-gke"
   location = var.zone
+
+  # We can't create a cluster with no node pool defined, but we want to only use
+  # separately managed node pools. So we create the smallest possible default
+  # node pool and immediately delete it.
   remove_default_node_pool = true 
   initial_node_count = 1
 }
 
 // Node pool: a group of VMs within the cluster, 
 // and you can have multiple node pools with different configurations in the same cluster.
-resource "google_container_node_pool" "zod-nodes" {
-  name = "zod-node-pool"
+resource "google_container_node_pool" "mlprod-nodes" {
+  name = "mlprod-node-pool"
   location = var.zone
-  cluster = google_container_cluster.zod-cluster.name
-  node_count = 1
+  cluster = google_container_cluster.mlprod-cluster.name
+  node_count = 3
   
   node_config {
     preemptible = true # similar to spot VMs 
     machine_type = var.machine_type
     disk_size_gb = var.boot_disk_size
   }
-
-  # autoscaling {
-  #   min_node_count = 1
-  #   max_node_count = 3
-  # }
 }
 
 # resource "google_compute_firewall" "sgd-firewall" {

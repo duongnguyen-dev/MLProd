@@ -1,6 +1,6 @@
 variable "project_id" {
   description = "The project Id to host the cluster in"
-  default = "true-oasis-438103-a2"
+  default = "healthy-result-407107"
 }
 
 variable "region" {
@@ -9,8 +9,8 @@ variable "region" {
 }
 
 variable "k8s" {
-  description = "GKE for zero shot object detection"
-  default     = "zero-shot-object-detection"
+  description = "GKE for ML prod"
+  default     = "mlprod"
 }
 
 variable "machine_type" {
@@ -30,7 +30,7 @@ variable "zone" {
 
 variable "boot_disk_size" {
   description = "Boot disk size for the instance"
-  default = 100
+  default = 50
 }
 
 # variable "firewall_name" {

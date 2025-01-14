@@ -5,3 +5,10 @@ mlops_loan_approval_classification.egg-info
 /configs/__pycache__
 /train/__pycache__
 /train/transforms/__pycache__
+
+healthy-result-407107-a2dcc9ffff34.json
+
+.terraform
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+terraform.tfstate

@@ -7,7 +7,7 @@ from minio import Minio
 
 load_dotenv()
 
-def upload_file_to_minio():
+def ingest_to_minio():
     # Connect to PostgresQL server
     conn = psycopg2.connect(
         database=os.getenv("POSTGRES_DB"),
@@ -53,4 +53,4 @@ def upload_file_to_minio():
     print(f"File '{object_name}' uploaded successfully to bucket '{bucket_name}'.")
 
 if __name__ == "__main__":
-    upload_file_to_minio()
+    ingest_to_minio()
