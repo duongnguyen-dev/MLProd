@@ -118,7 +118,7 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    terraform plan
    terraform apply
    ```
-   - After you run these command lines, you will see the GKE cluster is deployed at **asia-southeast1** with its node machine type is: **e2-standard-2 (2 vCPU, 1 core, 8 GB RAM and costs $144.35/1month)**. You can change these settings in `terraform/variables.tf` to your desired setting.
+   - After you run these command lines, you will see the GKE cluster is deployed at **asia-southeast1** with its node machine type is: **e2-standard-2 (2 vCPU, 1 core, 8 GB RAM and costs $61.45/1month)**. You can change these settings in `terraform/variables.tf` to your desired setting.
    - Remember not to set `enable_autopilot=true` in `terraform/main.tf` as Prometheus service cannot scrape node metrics from Autopilot cluster.
 
 - **Step 9**: Connect to GKE cluster
