@@ -128,7 +128,11 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    alias k=kubectl
    k get nodes
    ```
-
+- **Step 10**: Deploy on GKE using Helm chart
+   - **Installation**:
+     - For Windows, you can download directly from this [link](https://github.com/helm/helm/releases) then extract and add to Environment Variables
+     - For other OS, please follow this [link](https://helm.sh/docs/intro/install/)
+     
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
     - Required Python >= 3.10
