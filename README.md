@@ -10,7 +10,7 @@
        4. [Stream and batch processing](#124-stream-and-batch-processing)
        5. [Pipeline orchestration](#125-pipeline-orchestration)
    3. [Technology](#13-technology)
-      1. [Lakehouse (Minio + Trino + Hive + Terraform)](#131-lakehouse-minio-trino-hive-postgresql-terraform)
+      1. [Lakehouse (Minio + Trino + Hive + PostgreSQL + Terraform)](#131-lakehouse-minio-trino-hive-postgresql-terraform)
       2. [Orchestration (Airflow)]()
       3. [Ingestion (CDC, Batch ingestion)]()
       4. [Batch processing (PySpark on k8s)]()
