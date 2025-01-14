@@ -68,7 +68,7 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
 - Deploying Minio on k8s has several advantages:
    - **Availability**: The data inside Minio can be stored on multiple nodes ensuring the failure of one node does not affect the entire system.
    - **Scalability**: k8s supports both pod and node scaling, you can choose any method that suits your problem.
-- **Trino**: This is a distributed computing engine that works pretty well in data lakehouse architecture due to its scalability, it supports both horizontal (by adding more worker nodes) and vertical (adding more resources to each worker node) scaling.
+- **Trino**: This is a distributed computing engine that works pretty well in data lakehouse architecture due to its **scalability**, it supports both horizontal (by adding more worker nodes) and vertical (adding more resources to each worker node) scaling. By using multiple worker nodes, it helps to handle requests with **low-latency**.
    - Trino architecture:
      <p align="center">
         <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/trino.png" />
