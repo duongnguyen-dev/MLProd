@@ -101,6 +101,9 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
 - **Step 5**: Create service account
    - Create your [service account](https://console.cloud.google.com/iam-admin/serviceaccounts), and select `Kubernetes Engine Admin` role therefore you will have full management of Kubernetes Cluster and their Kubernetes API object for your service account.
    - Create new key as json type for your service account. Download this json file and save it in terraform directory. Update `credentials` in `terraform/main.tf` with your json directory.
+     <p align="center">
+        <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/service_account_key.png" />
+      </p>
 - **Step 6**: Add permission for the project
    - Go to [IAM](https://console.cloud.google.com/iam-admin/iam), click on `GRANT ACCESS`, then add new principals, this principal is your service account created in step 5. Finally, select `Owner` role.
 - **Step 7**: Installing [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
@@ -125,7 +128,11 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    alias k=kubectl
    k get nodes
    ```
-
+- **Step 10**: Deploy on GKE using Helm chart
+   - **Installation**:
+     - For Windows, you can download directly from this [link](https://github.com/helm/helm/releases) then extract and add to Environment Variables
+     - For other OS, please follow this [link](https://helm.sh/docs/intro/install/)
+     
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
     - Required Python >= 3.10
