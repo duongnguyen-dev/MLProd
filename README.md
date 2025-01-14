@@ -10,8 +10,8 @@
        4. [Stream and batch processing](#124-stream-and-batch-processing)
        5. [Pipeline orchestration](#125-pipeline-orchestration)
    3. [Technology](#13-technology)
-      1. [Orchestration (Airflow)]()
-      2. [Storage (Minio on k8s)]()
+      1. [Storage (Minio on k8s)]()
+      2. [Orchestration (Airflow)]()
       3. [Ingestion (CDC, Batch ingestion)]()
       4. [Batch processing (PySpark on k8s)]()
       5. [Stream processing (Flink)]()
@@ -41,13 +41,15 @@
    - Scalable
    - Low-cost
    - Accessible
-   - Quality and Reliable
+   - Quality and Reliable 
+
 Based on the advantages mentioned above, I choose **Data lakehouse** for the data pipeline. You can read more from this blog [Data warehouses vs Data lakes vs Data lake houses](https://www.ibm.com/think/topics/data-warehouse-vs-data-lake-vs-data-lakehouse)
 
 #### 1.2.3. Stream and batch ingestion
 - **Batch ingestion**: This is an ingestion model where you want to get data at a specific interval or simply say you know the starting and ending point.
 - **Stream ingestion**: This ingestion model ensures that the data in your lakehouse is up to date with every change in the data source.
 - **Hybrid ingestion**: Mixed both batch and stream ingestion.
+
 In this repo, I use a **Hybrid ingestion** model to load data from data source to the lakehouse. You can read more here [Your data ingestion strategy is a key factor in data quality](https://www.ibm.com/think/insights/data-ingestion-strategy#:~:text=Generally%2C%20there%20are%20three%20modes%20of%20data%20ingestion%3A,a%20daily%2C%20weekly%2C%20monthly%20or%20other%20time-based%20schedule.) 
 
 #### 1.2.4. Stream and batch processing
@@ -62,7 +64,10 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    - Cronjob is hard to set up, maintain, and debug.
 
 ### 1.3. Technology
-
+#### 1.3.1. Storage (Minio on k8s)
+- Deploying Minio on k8s has several advantages:
+   - **Availability**: The data inside Minio can be stored on multiple nodes ensuring the failure of one node does not affect the entire system.
+   - **Scalability**: k8s supports both pod and node scaling, you can choose any method that suits your problem.
 
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
