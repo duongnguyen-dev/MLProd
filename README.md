@@ -27,3 +27,7 @@
     ```
     pip install -e .
     ```
+
+- run source: docker compose -f source/docker-compose.yaml up -d
+- run migrate: npx prisma migrate dev --name
+- run prisma studio: npx prisma studio
