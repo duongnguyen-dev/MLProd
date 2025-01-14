@@ -80,9 +80,9 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
 **How to guide 📖**
 - **Step 1**: Create a [project](https://console.cloud.google.com/projectcreate)
 - **Step 2**: Install Cloud CLI by following one of these document
-      - For Mac: https://cloud.google.com/sdk/docs/install#mac
-      - For Ubuntu: https://cloud.google.com/sdk/docs/install#deb
-      - For Windows: https://cloud.google.com/sdk/docs/install#windows
+   - For Mac: https://cloud.google.com/sdk/docs/install#mac
+   - For Ubuntu: https://cloud.google.com/sdk/docs/install#deb
+   - For Windows: https://cloud.google.com/sdk/docs/install#windows
 - **Step 3**: Initialize the Google Cloud CLI
    ``` bash
    gcloud init
