@@ -10,7 +10,7 @@
        4. [Stream and batch processing](#124-stream-and-batch-processing)
        5. [Pipeline orchestration](#125-pipeline-orchestration)
    3. [Technology](#13-technology)
-      1. [Lakehouse (Minio + Trino + Hive + Terraform)](#131-lakehouse-minio-trino-hive-terraform)
+      1. [Lakehouse (Minio + Trino + Hive + PostgreSQL + Terraform)](#131-lakehouse-minio-trino-hive-postgresql-terraform)
       2. [Orchestration (Airflow)]()
       3. [Ingestion (CDC, Batch ingestion)]()
       4. [Batch processing (PySpark on k8s)]()
@@ -64,30 +64,36 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    - Cronjob is hard to set up, maintain, and debug.
 
 ### 1.3. Technology
-#### 1.3.1. Lakehouse (Minio + Trino + Hive + Terraform)
+#### 1.3.1. Lakehouse (Minio + Trino + Hive + PostgreSQL + Terraform)
 - Deploying Minio on k8s has several advantages:
    - **Availability**: The data inside Minio can be stored on multiple nodes ensuring the failure of one node does not affect the entire system.
    - **Scalability**: k8s supports both pod and node scaling, you can choose any method that suits your problem.
-- Trino:
-- Hive:
-- Terraform:
+- **Trino**: This is a distributed computing engine that works pretty well in data lakehouse architecture due to its **scalability**, it supports both horizontal (by adding more worker nodes) and vertical (adding more resources to each worker node) scaling. By using multiple worker nodes, it helps to handle requests with **low-latency**.
+   - Trino architecture:
+     <p align="center">
+        <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/trino.png" />
+      </p>
+- **Hive metastore**: A service that stores metadata for Hive tables (like table schema)
+- **PostgreSQL**: This is the database backend for the Hive Metastore. It's where the metadata is actually stored.
+- **Terraform**: A tool to build up GKE.
 
 **How to guide 📖**
 - **Step 1**: Create a [project](https://console.cloud.google.com/projectcreate)
 - **Step 2**: Install Cloud CLI by following one of these document
-      - For Mac: https://cloud.google.com/sdk/docs/install#mac
-      - For Ubuntu: https://cloud.google.com/sdk/docs/install#deb
-      - For Windows: https://cloud.google.com/sdk/docs/install#windows
+   - For Mac: https://cloud.google.com/sdk/docs/install#mac
+   - For Ubuntu: https://cloud.google.com/sdk/docs/install#deb
+   - For Windows: https://cloud.google.com/sdk/docs/install#windows
 - **Step 3**: Initialize the Google Cloud CLI
+  - Check if the Google Cloud CLI is installed successfully.
+   ``` bash
+   gcloud -v
+   ```
+   - Initialize gcloud by running
    ``` bash
    gcloud init
    Y
    ```
    - Pick you cloud project then type Enter.
-   - Check if the Google Cloud CLI is installed successfully.
-   ``` bash
-   gcloud -v
-   ```
 - **Step 4**: Install gke-cloud-auth-plugin
    ``` bash
    gcloud components install gke-gcloud-auth-plugin
@@ -96,7 +102,7 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    - Create your [service account](https://console.cloud.google.com/iam-admin/serviceaccounts), and select `Kubernetes Engine Admin` role therefore you will have full management of Kubernetes Cluster and their Kubernetes API object for your service account.
    - Create new key as json type for your service account. Download this json file and save it in terraform directory. Update `credentials` in `terraform/main.tf` with your json directory.
 - **Step 6**: Add permission for the project
-   - Go to [IAM](https://console.cloud.google.com/iam-admin/iam), click on `GRANT ACCESS`, then add new principals, this principal is your service account created in step 1.3. Finally, select `Owner` role.
+   - Go to [IAM](https://console.cloud.google.com/iam-admin/iam), click on `GRANT ACCESS`, then add new principals, this principal is your service account created in step 5. Finally, select `Owner` role.
 - **Step 7**: Installing [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 - **Step 8**: Using Terraform to create GKE cluster
    - Change the default value of variable `project_id` in `terraform/variables.tf` with your project id on Google Cloud. Then run the following command to create GKE cluster:
