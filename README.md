@@ -132,6 +132,8 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    - **Installation**:
      - For Windows, you can download directly from this [link](https://github.com/helm/helm/releases) then extract and add to Environment Variables
      - For other OS, please follow this [link](https://helm.sh/docs/intro/install/)
+   - **Additional Installation**:
+     - Follow this installation [guide](https://krew.sigs.k8s.io/docs/user-guide/setup/install/)
      
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
