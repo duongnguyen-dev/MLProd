@@ -76,6 +76,11 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
 - **Hive metastore**: A service that stores metadata for Hive tables (like table schema)
 - **PostgreSQL**: This is the database backend for the Hive Metastore. It's where the metadata is actually stored.
 - **Terraform**: A tool to build up GKE.
+- My setup will include:
+  - For **trino**: 1 coordinator and 2 worker nodes
+  - For **minio**: 1 tenant pool with 2 pods, each pod has two volumes for storing data.
+
+**NOTE**: If you want to **add more tenants**, just create a new namespace as two tenants cannot live in the same namespace, then redo *step 10 till the end*
 
 **How to guide 📖**
 - **Step 1**: Create a [project](https://console.cloud.google.com/projectcreate)
@@ -133,8 +138,18 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
      - For Windows, you can download directly from this [link](https://github.com/helm/helm/releases) then extract and add to Environment Variables
      - For other OS, please follow this [link](https://helm.sh/docs/intro/install/)
    - **Additional Installation**:
-     - Follow this installation [guide](https://krew.sigs.k8s.io/docs/user-guide/setup/install/)
-     
+     - Following this [guide](https://krew.sigs.k8s.io/docs/user-guide/setup/install/) to install krew
+     - Install minio plugin for kubectl by running this command:
+       ``` bash
+       kubectl krew install minio
+       ```
+   - **Usage**:
+     - Run the script below to deploy lakehouse into GKE
+        ``` bash
+        bash up.sh
+        ```
+     - The result should look like this when you run `kubectl get pods -n <YOUR_NAMESPACE>`
+       
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
     - Required Python >= 3.10
