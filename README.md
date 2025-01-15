@@ -157,6 +157,9 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
        export POD_NAME=$(kubectl get pods --namespace trino -l "app=trino,release=my-trino,component=coordinator" -o jsonpath="{.items[0].metadata.name}")
        kubectl port-forward $POD_NAME 8080:8080
        ```
+       <p align="center">
+           <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/trino_ui.png" />
+       </p>
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
     - Required Python >= 3.10
