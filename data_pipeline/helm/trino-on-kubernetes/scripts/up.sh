@@ -18,6 +18,6 @@ kubectl minio tenant create tenant-1 --servers 4 --volumes 4 --capacity 4Gi -n t
 helm upgrade --install hive-metastore-postgresql bitnami/postgresql -n trino -f hive-metastore-postgresql/values.yaml
 helm upgrade --install my-hive-metastore -n trino -f hive-metastore/values.yaml ./charts/hive-metastore
 helm upgrade --install my-redis bitnami/redis -n trino -f redis/values.yaml
-# helm upgrade --install my-trino trino/trino --version 0.7.0 --namespace trino -f trino/values.yaml
+helm upgrade --install my-trino trino/trino --version 0.7.0 --namespace trino -f trino/values.yaml
 
 )
