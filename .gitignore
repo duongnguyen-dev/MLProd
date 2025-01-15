@@ -12,3 +12,4 @@ healthy-result-407107-a2dcc9ffff34.json
 .terraform.lock.hcl
 .terraform.tfstate.lock.info
 terraform.tfstate
+terraform.tfstate.backup
