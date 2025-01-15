@@ -149,7 +149,9 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
         bash up.sh
         ```
      - The result should look like this when you run `kubectl get pods -n <YOUR_NAMESPACE>`
-       
+       <p align="center">
+           <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/deploy_lakehouse.png" />
+         </p>
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
     - Required Python >= 3.10
