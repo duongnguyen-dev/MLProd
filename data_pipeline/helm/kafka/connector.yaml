@@ -1,0 +1,34 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: debezium-connector-postgres
+  labels:
+    strimzi.io/cluster: debezium-connect-cluster
+spec:
+  class: io.debezium.connector.postgresql.PostgresConnector
+  tasksMax: 1
+  config:
+    tasks.max: 1
+    database.hostname: host.docker.internal
+    database.port: 5432
+    database.user: ${secrets:trino/debezium-secret:username}
+    database.password: ${secrets:trino/debezium-secret:password}
+    database.dbname: loan_approval_db
+    topic.prefix: loan_approval_db
+    plugin.name: pgoutput
+    publication.autocreate.mode: filtered
+    table.include.list: public.actor
+    key.converter.schemas.enable: false
+    value.converter.schemas.enable: false
+    snapshot.mode: always
+    message.key.columns: public.actor:actor_id
+    transforms: unwrap
+    transforms.unwrap.type: io.debezium.transforms.ExtractNewRecordState
+    transforms.unwrap.add.fields: op:_meta_op,table:_meta_table,lsn:_meta_lsn,source.ts_ms:_meta_event_ts,schema:_meta_schema
+    transforms.unwrap.add.headers: db
+    transforms.unwrap.delete.handling.mode: rewrite
+    delete.tombstone.handling.mode: rewrite
+    converters: timestampConverter,
+    timestampConverter.type: oryanmoshe.kafka.connect.util.TimestampConverter
+    key.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter: org.apache.kafka.connect.json.JsonConverter

@@ -11,7 +11,7 @@ terraform {
 // managing the infrastructure in GCP, this will
 // apply to all the resources in the project
 provider "google" {
-  credentials = "./healthy-result-407107-a2dcc9ffff34.json" # Replace this with you key .json file
+  credentials = "./savvy-surge-448015-g4-62cc397bc79b.json" # Replace this with you key .json file
   project     = var.project_id
   region      = var.region
 }

@@ -1,6 +1,6 @@
 variable "project_id" {
   description = "The project Id to host the cluster in"
-  default = "healthy-result-407107"
+  default = "savvy-surge-448015-g4"
 }
 
 variable "region" {
@@ -30,7 +30,7 @@ variable "zone" {
 
 variable "boot_disk_size" {
   description = "Boot disk size for the instance"
-  default = 50
+  default = 80
 }
 
 # variable "firewall_name" {
