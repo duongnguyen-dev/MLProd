@@ -10,9 +10,9 @@
        4. [Stream and batch processing](#124-stream-and-batch-processing)
        5. [Pipeline orchestration](#125-pipeline-orchestration)
    3. [Technology](#13-technology)
-      1. [Lakehouse (Minio + Trino + Hive + PostgreSQL + Terraform)](#131-lakehouse-minio-trino-hive-postgresql-terraform)
-      2. [Orchestration (Airflow)]()
-      3. [Ingestion (CDC, Batch ingestion)]()
+      1. [Lakehouse (Minio + Trino + Hive + PostgreSQL + Terraform)](#131-lakehouse)
+      2. [Ingestion (CDC, Batch ingestion)](#132)
+      3. [Orchestration (Airflow)]()
       4. [Batch processing (PySpark on k8s)]()
       5. [Stream processing (Flink)]()
       6. [Feature store (Feast)]()
@@ -64,21 +64,22 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    - Cronjob is hard to set up, maintain, and debug.
 
 ### 1.3. Technology
-#### 1.3.1. Lakehouse (Minio + Trino + Hive + PostgreSQL + Terraform)
-- Deploying Minio on k8s has several advantages:
-   - **Availability**: The data inside Minio can be stored on multiple nodes ensuring the failure of one node does not affect the entire system.
-   - **Scalability**: k8s supports both pod and node scaling, you can choose any method that suits your problem.
-- **Trino**: This is a distributed computing engine that works pretty well in data lakehouse architecture due to its **scalability**, it supports both horizontal (by adding more worker nodes) and vertical (adding more resources to each worker node) scaling. By using multiple worker nodes, it helps to handle requests with **low-latency**.
-   - Trino architecture:
-     <p align="center">
-        <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/trino.png" />
-      </p>
-- **Hive metastore**: A service that stores metadata for Hive tables (like table schema)
-- **PostgreSQL**: This is the database backend for the Hive Metastore. It's where the metadata is actually stored.
-- **Terraform**: A tool to build up GKE.
-- My setup will include:
-  - For **trino**: 1 coordinator and 2 worker nodes
-  - For **minio**: 1 tenant pool with 2 pods, each pod has two volumes for storing data.
+#### 1.3.1. Lakehouse
+- The technology stacks that i used to build a data lakehouse are:
+   - Deploying Minio on k8s has several advantages:
+      - **Availability**: The data inside Minio can be stored on multiple nodes ensuring the failure of one node does not affect the entire system.
+      - **Scalability**: k8s supports both pod and node scaling, you can choose any method that suits your problem.
+   - **Trino**: This is a distributed computing engine that works pretty well in data lakehouse architecture due to its **scalability**, it supports both horizontal (by adding more worker nodes) and vertical (adding more resources to each worker node) scaling. By using multiple worker nodes, it helps to handle requests with **low-latency**.
+      - Trino architecture:
+        <p align="center">
+           <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/trino.png" />
+         </p>
+   - **Hive metastore**: A service that stores metadata for Hive tables (like table schema)
+   - **PostgreSQL**: This is the database backend for the Hive Metastore. It's where the metadata is actually stored.
+   - **Terraform**: A tool to build up GKE.
+   - My setup will include:
+     - For **trino**: 1 coordinator and 2 worker nodes
+     - For **minio**: 1 tenant pool with 2 pods, each pod has two volumes for storing data.
 
 **NOTE**: If you want to **add more tenants**, just create a new namespace as two tenants cannot live in the same namespace, then redo *step 10 till the end*
 
@@ -123,7 +124,7 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
    terraform plan
    terraform apply
    ```
-   - After you run these command lines, you will see the GKE cluster is deployed at **asia-southeast1** with its node machine type is: **e2-standard-2 (2 vCPU, 1 core, 8 GB RAM and costs $61.45/1month)**. You can change these settings in `terraform/variables.tf` to your desired setting.
+   - After you run these command lines, you will see the GKE cluster is deployed at **asia-southeast1** with its node machine type is: **e2-standard-4 (4 vCPU, 2 core, 16 GB RAM and costs $105.84/1month)**. You can change these settings in `terraform/variables.tf` to your desired setting.
    - Remember not to set `enable_autopilot=true` in `terraform/main.tf` as Prometheus service cannot scrape node metrics from Autopilot cluster.
 
 - **Step 9**: Connect to GKE cluster
@@ -157,6 +158,17 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
        export POD_NAME=$(kubectl get pods --namespace trino -l "app=trino,release=my-trino,component=coordinator" -o jsonpath="{.items[0].metadata.name}")
        kubectl port-forward $POD_NAME 8080:8080
        ```
+       <p align="center">
+           <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/trino_ui.png" />
+       </p>
+#### 1.3.2. Ingestion
+- The technology that i use to streamline data is Kafka
+- In my problem, i will define Kafka's concepts like below:
+   - **Consumer**: Minio
+   - **Producer**: Debezium which captures changes from PostgreSQL data source and publishes events to Kafka
+   - To avoid rebalance (when a consumer group adds or removes consumers (scale), the partitions will be reassigned / rebalanced to all other consumers which causes the system a lagged interval.,) a good practice is to set the number of partitions equal to the number of pods in your cluster like in this setting.
+ 
+
 ## Installation and Usage for training purpose only:
 - **Step 1**: Install and create conda environment
     - Required Python >= 3.10
