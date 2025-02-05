@@ -2,9 +2,7 @@
 node_modules
 mlops_loan_approval_classification.egg-info
 
-/configs/__pycache__
-/train/__pycache__
-/train/transforms/__pycache__
+__pycache__
 
 savvy-surge-448015-g4-62cc397bc79b.json
 

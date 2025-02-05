@@ -1,23 +1,14 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="mlops-loan-approval-classification",
+    name="mlprod",
     version="0.0.1",
     description="An end-to-end MLFlow for Loan Approval Classification",
     author="Duong",
     author_email="duongng2911@gmail.com", 
-    url="https://github.com/duongnguyen-dev/mlops-loan-approval-classification",
+    url="https://github.com/duongnguyen-dev/MLProd",
     packages=find_packages(),  # Automatically find packages in your project
-    install_requires=[
-        "pyspark==3.5.4",
-        "scikit-learn==1.6.0",
-        "mlflow==2.19.0",
-        "fastapi==0.115.6",
-        "seaborn==0.13.2",
-        "minio==7.2.13",
-        "findspark==2.0.1"
-        "imbalanced-learn==0.13.0"
-    ],
+    install_requires=[],
     python_requires=">=3.10",
     classifiers=[
         "Programming Language :: Python :: 3",
