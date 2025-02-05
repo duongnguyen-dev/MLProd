@@ -1,4 +1,4 @@
-# End-to-end Machine Learning system in production
+# End-to-end Machine Learning system in production (Run locally)
 
 # Table of contents
 1. [Data pipeline](#1-data-pipeline)
@@ -186,6 +186,24 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
     ```
     pip install -e .
     ```
+
+- Run CDC
+```bash
+cd data
+docker compose -f cdc-docker-compose.yaml up -d
+bash source_registration.sh register_connector configs/source-connector.json
+```
+- Test connection
+```bash
+cd utils
+python create_table.py
+python insert_to_source.py
+```
+- Spark
+```bash
+docker build -f spark.dockerfile -t <image_name:tag> .
+docker compose -f spakr-docker-compose.yaml up -d
+```
 
 - run source: docker compose -f source/docker-compose.yaml up -d
 - run migrate: npx prisma migrate dev --name

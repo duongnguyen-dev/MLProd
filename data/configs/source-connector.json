@@ -1,0 +1,14 @@
+{
+    "name": "loan-cdc",  
+    "config": {
+      "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+      "database.hostname": "postgresql",
+      "database.port": "5432",
+      "database.user": "tenant",
+      "database.password": "tenant",
+      "database.dbname" : "tenant",
+      "plugin.name": "pgoutput",
+      "database.server.name": "test",
+      "table.include.list": "public.loan"
+    }
+}

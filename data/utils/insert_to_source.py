@@ -3,22 +3,29 @@ import psycopg2
 import pandas as pd
 import json
 
+from time import sleep
 from psycopg2.extras import Json
 from loguru import logger
 from dotenv import load_dotenv
+from postgresql_client import PostgresSQLClient
 
 load_dotenv()
 
+TABLE_NAME = "loan"
+
 def insert():
-    conn = psycopg2.connect(
+    pc = PostgresSQLClient(
         database=os.getenv("POSTGRES_DB"),
-        host=os.getenv("POSTGRES_HOST"), 
-        port=os.getenv("POSTGRES_PORT"), 
-        user=os.getenv("POSTGRES_USER"), 
-        password=os.getenv("POSTGRES_PASSWORD")
+        user=os.getenv("POSTGRES_USER"),
+        password=os.getenv("POSTGRES_PASSWORD"),
     )
-    cur = conn.cursor()
-    logger.info("Successfully connect to database.")
+
+    # Get all columns from the devices table
+    try:
+        columns = pc.get_columns(table_name=TABLE_NAME)
+        print(columns)
+    except Exception as e:
+        print(f"Failed to get schema for table with error: {e}")
 
     data = pd.read_csv("data/loan_data.csv")
     data = data.where(pd.notnull(data), None)  # Replace NaN with None
@@ -40,30 +47,12 @@ def insert():
                          row["previous_loan_defaults_on_file"],
                          row["loan_status"]
                         )
-
-        cur.execute("""
-            INSERT INTO "Loan" (
-                id,
-                person_age,
-                person_gender,
-                person_education,
-                person_income,
-                person_emp_exp,
-                person_home_ownership,
-                loan_amnt,
-                loan_intent,
-                loan_int_rate,
-                loan_percent_income,
-                cb_person_cred_hist_length,
-                credit_score,
-                previous_loan_defaults_on_file,
-                loan_status
-            ) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, inserted_data)
+        print(inserted_data)
+        pc.execute_query(f"""
+            insert into {TABLE_NAME} ({",".join(columns)})
+            values {inserted_data}
+        """)
         logger.info(f"A new record has been inserted successfully!")
-        conn.commit()
-    conn.close()
 
 if __name__ == "__main__":
     insert()
