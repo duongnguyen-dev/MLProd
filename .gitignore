@@ -11,3 +11,5 @@ savvy-surge-448015-g4-62cc397bc79b.json
 .terraform.tfstate.lock.info
 terraform.tfstate
 terraform.tfstate.backup
+
+mlprod.egg-info
