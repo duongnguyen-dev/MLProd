@@ -1,0 +1,15 @@
+project: feast
+provider: local
+online_store:
+  type: redis
+  connection_string: "localhost:6380"
+offline_store: 
+  type: postgres
+  host: localhost
+  port: 5444
+  database: feature
+  user: feature
+  password: feature 
+registry:
+  registry_type: sql
+  path: postgresql://registry:registry@localhost:55001/registry

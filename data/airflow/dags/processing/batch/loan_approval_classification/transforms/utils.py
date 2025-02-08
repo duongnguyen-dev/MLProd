@@ -2,8 +2,6 @@ import matplotlib.pyplot as plt
 import pyspark.sql.functions as F
 import pyspark.sql.types as T
 
-from pyspark.ml.linalg import Vectors
-
 def find_categorical_cols(df):
     categorical_columns = [
         field.name for field in df.schema.fields if str(field.dataType) in ['StringType()', 'BooleanType()'] and field.name != "loan_status"

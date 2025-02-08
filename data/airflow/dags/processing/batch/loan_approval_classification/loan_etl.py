@@ -1,21 +1,16 @@
 import findspark
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pyspark.sql.functions as F
-import pyspark.sql.types as T
-import pandas as pd
 
 from loguru import logger
 from pyspark.sql import SparkSession
-from data.processing.batch.base import BaseBatchProcessing
-from data.processing.utils import get_env_variable
-from data.processing.batch.loan_approval_classification.transforms.utils import *
-from data.processing.batch.loan_approval_classification.transforms.splitting import stratified_splitting
-from data.processing.batch.loan_approval_classification.transforms.scaling import robust_scaling
-from data.processing.batch.loan_approval_classification.transforms.outliers import log_transformation
-from data.processing.batch.loan_approval_classification.transforms.categorical_data import * 
-from data.processing.batch.loan_approval_classification.transforms.categorical_data import *
-from data.processing.batch.loan_approval_classification.transforms.correlation import *
+from processing.batch.base import BaseBatchProcessing
+from processing.utils import get_env_variable
+from processing.batch.loan_approval_classification.transforms.utils import *
+# from processing.batch.loan_approval_classification.transforms.splitting import stratified_splitting
+from processing.batch.loan_approval_classification.transforms.scaling import robust_scaling
+from processing.batch.loan_approval_classification.transforms.outliers import log_transformation
+from processing.batch.loan_approval_classification.transforms.categorical_data import * 
+from processing.batch.loan_approval_classification.transforms.categorical_data import *
+# from processing.batch.loan_approval_classification.transforms.correlation import *
 
 findspark.init()
 findspark.find()

@@ -1,10 +1,10 @@
 from pyspark.sql import SparkSession
 from dotenv import load_dotenv
-from data.ingestion.batch.base import BaseBatchIngestion
-from data.ingestion.utils import get_env_variable
+from ingestion.batch.base import BaseBatchIngestion
+from ingestion.utils import get_env_variable
 from loguru import logger
 
-load_dotenv()
+load_dotenv('/opt/airflow/.env')
 
 class PostgresToMinio(BaseBatchIngestion):
     def __init__(self):
@@ -45,12 +45,12 @@ class PostgresToMinio(BaseBatchIngestion):
         return spark
     
     def read(self, table_name, app_name):
-        try:
-            spark = self.create_spark_session(app_name)
-            logger.info(spark._jvm.org.apache.hadoop.util.VersionInfo.getVersion())
-        except:
-            logger.error("Unable to create spark session")
-            return 
+        spark = self.create_spark_session(app_name)
+        # try:
+        #     spark = self.create_spark_session(app_name)
+        # except:
+        #     logger.error("Unable to create spark session")
+        #     return 
         # Reading the table from PostgreSQL
         df = spark.read \
                 .format("jdbc") \
@@ -66,11 +66,8 @@ class PostgresToMinio(BaseBatchIngestion):
             df.write \
                 .mode("overwrite") \
                 .option("header", "true") \
-                .csv(f"s3a://{self.__bucket}/{self.__object}.csv")
+                .csv(f"s3a://{self.__bucket}/{self.__object}")
             logger.info(f"File '{self.__object}' uploaded successfully to bucket '{self.__bucket}'.")
         except:
             logger.error("Cannot ingest data from Postgres to Minio")
-        
-if __name__ == "__main__":
-    ptm = PostgresToMinio()
-    ptm.read(table_name="loan", app_name="Batch ingestion from PostgreSQL to Minio")
+            
