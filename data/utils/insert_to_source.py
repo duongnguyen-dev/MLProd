@@ -8,6 +8,7 @@ from psycopg2.extras import Json
 from loguru import logger
 from dotenv import load_dotenv
 from postgresql_client import PostgresSQLClient
+from configs.config import PROJECT_DIR
 
 load_dotenv()
 
@@ -18,6 +19,7 @@ def insert():
         database=os.getenv("POSTGRES_DB"),
         user=os.getenv("POSTGRES_USER"),
         password=os.getenv("POSTGRES_PASSWORD"),
+        port=os.getenv("POSTGRES_PORT")
     )
 
     # Get all columns from the devices table
@@ -27,7 +29,7 @@ def insert():
     except Exception as e:
         print(f"Failed to get schema for table with error: {e}")
 
-    data = pd.read_csv("data/loan_data.csv")
+    data = pd.read_csv(f"{str(PROJECT_DIR)}/data/utils/data/loan_data.csv")
     data = data.where(pd.notnull(data), None)  # Replace NaN with None
 
     for index, row in data.iterrows():

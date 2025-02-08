@@ -13,5 +13,10 @@ psycopg2-binary==2.9.10
 loguru==0.7.3
 python-dotenv==1.0.1
 kafka-python==2.0.2
-pyarrow==16.1.0
-pyspark==3.5.1
+feast==0.45.0
+pyspark==3.5.4
+feast[trino]
+apache-airflow==2.7.1
+apache-airflow-providers-postgres==5.6.1
+airflow-provider-great-expectations==0.2.6
+apache-airflow-providers-docker==3.7.5

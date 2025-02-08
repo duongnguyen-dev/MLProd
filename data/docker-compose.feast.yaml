@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  feast-redis:
+    image: redis:latest
+    container_name: feast-online-store
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 50
+      start_period: 30s
+
+  registry:
+    container_name: feast-registry
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_DB=registry
+      - POSTGRES_USER=registry
+      - POSTGRES_PASSWORD=registry
+    ports:
+      - "55001:5432"
+    volumes: 
+      - feast-registry-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "registry"]
+      interval: 5s
+      retries: 5
+
+  feast-postgres:
+    container_name: feast-offline-store
+    image: postgres:13
+    restart: always
+    environment:
+      - POSTGRES_DB=feature
+      - POSTGRES_USER=feature
+      - POSTGRES_PASSWORD=feature
+    ports:
+      - "5444:5432"
+    volumes: 
+      - feast-feature-db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "feature"]
+      interval: 5s
+      retries: 5
+
+volumes:
+  feast-registry-db:
+  feast-feature-db:

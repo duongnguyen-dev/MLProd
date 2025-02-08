@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.8'
 services:
   # Distributed query engine for various types
   # of data sources
@@ -86,18 +86,6 @@ services:
       MINIO_SECRET_KEY: minio_secret_key
       # MINIO_DEFAULT_BUCKETS: "my-bucket"
     command: server --console-address ":9001" /data
-
-  # createbucket:
-  #   image: minio/mc:RELEASE.2020-11-25T23-04-07Z-arm64
-  #   depends_on:
-  #     - minio
-  #   entrypoint: >
-  #     /bin/sh -c "
-  #     /usr/bin/mc alias set myminio http://minio:9000 minio_access_key minio_secret_key;
-  #     /usr/bin/mc mb myminio/my-bucket;
-  #     /usr/bin/mc policy set public myminio/my-bucket;
-  #     exit 0;
-  #     "
 
 volumes:
   minio_storage:

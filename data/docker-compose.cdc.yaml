@@ -168,7 +168,7 @@ services:
       timeout: 5s
       retries: 5
     ports:
-      - "5432:5432"
+      - "5437:5432"
     environment:
       - POSTGRES_DB=tenant
       - POSTGRES_USER=tenant

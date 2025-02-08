@@ -3,6 +3,16 @@ README.md
 setup.py
 configs/__init__.py
 configs/config.py
+data/__init__.py
+data/feast/__init__.py
+data/feast/feature_repo/__init__.py
+data/feast/feature_repo/data_source.py
+data/feast/feature_repo/entities.py
+data/feast/feature_repo/test_workflow.py
+data/utils/__init__.py
+data/utils/create_table.py
+data/utils/insert_to_source.py
+data/utils/postgresql_client.py
 mlprod.egg-info/PKG-INFO
 mlprod.egg-info/SOURCES.txt
 mlprod.egg-info/dependency_links.txt
