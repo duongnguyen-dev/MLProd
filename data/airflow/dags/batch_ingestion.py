@@ -14,6 +14,6 @@ with DAG(dag_id="batch_ingestion",
     
     def ingest_postgres_to_minio():
         ptm = PostgresToMinio()
-        ptm.read(table_name="loan", app_name="Batch ingestion from PostgreSQL to Minio")
+        ptm.execute(table_name="loan", app_name="Batch ingestion from PostgreSQL to Minio")
         
     ingestion_task = PythonOperator(task_id="ingest_postgres_to_minio", python_callable=ingest_postgres_to_minio)

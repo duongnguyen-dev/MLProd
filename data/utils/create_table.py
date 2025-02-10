@@ -14,7 +14,7 @@ def main():
         port=os.getenv("POSTGRES_PORT")
     )
 
-    # Create devices table
+    # Create loan table
     create_table_query = """
         CREATE TABLE IF NOT EXISTS loan (
             id INT PRIMARY KEY,

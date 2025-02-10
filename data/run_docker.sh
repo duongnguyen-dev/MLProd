@@ -22,7 +22,7 @@ case "$COMMAND" in
 
         docker compose -f docker-compose.lakehouse.yaml up -d
 
-        # docker build -f dockerfile.spark -t spark-image:latest .
+        docker build -f dockerfile.spark -t spark-image:latest .
         docker compose -f docker-compose.spark.yaml up -d
 
         docker compose -f docker-compose.airflow.yaml build

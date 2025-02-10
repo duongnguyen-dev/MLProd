@@ -44,13 +44,7 @@ class PostgresToMinio(BaseBatchIngestion):
         
         return spark
     
-    def read(self, table_name, app_name):
-        spark = self.create_spark_session(app_name)
-        # try:
-        #     spark = self.create_spark_session(app_name)
-        # except:
-        #     logger.error("Unable to create spark session")
-        #     return 
+    def read(self, table_name, spark):
         # Reading the table from PostgreSQL
         df = spark.read \
                 .format("jdbc") \
@@ -60,7 +54,7 @@ class PostgresToMinio(BaseBatchIngestion):
                 .option("password", self.__password) \
                 .option("driver", "org.postgresql.Driver") \
                 .load()
-        
+
         # Write Data to MinIO in CSV format
         try:
             df.write \
@@ -71,3 +65,6 @@ class PostgresToMinio(BaseBatchIngestion):
         except:
             logger.error("Cannot ingest data from Postgres to Minio")
             
+    def execute(self, table_name, app_name):
+        spark = self.create_spark_session(app_name)
+        self.read(table_name, spark)
