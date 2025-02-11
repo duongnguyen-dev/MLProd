@@ -13,3 +13,5 @@ terraform.tfstate
 terraform.tfstate.backup
 
 mlprod.egg-info
+
+.env.airflow
