@@ -14,6 +14,6 @@ with DAG(dag_id="loan_etl",
     
     def etl_dwh_to_feature_store():
         etl = LoanApprovalETL()
-        etl.execute(app_name="ETL from data warehouse to feature store", table_name="loan")
+        etl.execute(table_name="loan")
         
     processing_task = PythonOperator(task_id="dwh_to_feature_store", python_callable=etl_dwh_to_feature_store)

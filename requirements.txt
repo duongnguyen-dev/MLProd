@@ -6,7 +6,6 @@ minio==7.2.13
 findspark==2.0.1
 imbalanced-learn==0.13.0
 torch==2.5.1
-skl2onnx==1.18.0
 onnx==1.17.0
 onnxruntime==1.20.1
 psycopg2-binary==2.9.10
@@ -19,4 +18,4 @@ feast[trino]
 apache-airflow==2.7.1
 apache-airflow-providers-postgres==5.6.1
 airflow-provider-great-expectations==0.2.6
-apache-airflow-providers-docker==3.7.5
+trino==0.333.0

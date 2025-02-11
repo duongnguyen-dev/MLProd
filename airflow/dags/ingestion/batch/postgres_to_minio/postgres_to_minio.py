@@ -4,7 +4,7 @@ from ingestion.batch.base import BaseBatchIngestion
 from ingestion.utils import get_env_variable
 from loguru import logger
 
-load_dotenv('/opt/airflow/.env')
+load_dotenv('/opt/airflow/.env.airflow')
 
 class PostgresToMinio(BaseBatchIngestion):
     def __init__(self):
