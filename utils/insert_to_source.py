@@ -29,7 +29,7 @@ def insert():
     except Exception as e:
         print(f"Failed to get schema for table with error: {e}")
 
-    data = pd.read_csv(f"{str(PROJECT_DIR)}/data/utils/data/loan_data.csv")
+    data = pd.read_csv(f"{str(PROJECT_DIR)}/utils/data/loan_data.csv")
     data = data.where(pd.notnull(data), None)  # Replace NaN with None
 
     for index, row in data.iterrows():

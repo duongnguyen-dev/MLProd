@@ -1,26 +1,26 @@
 # End-to-end Machine Learning system in production (Run locally)
 
+# TODO:
+[]: Implement Stream ingestion
+[]: Deploy on GKE
+[]: Implement model training architecture
+
 # Table of contents
-1. [Data pipeline](#1-data-pipeline)
-   1. [Overall data architecture](#11-overall-data-architecture)
-   2. [Approach and concepts](#12-approach-and-concepts)
-       1. [Data source](#121-data-source)
-       2. [Data lake house architecture](#122-data-lake-house-architecture)
-       3. [Stream and batch ingestion](#123-stream-and-batch-ingestion)
-       4. [Stream and batch processing](#124-stream-and-batch-processing)
-       5. [Pipeline orchestration](#125-pipeline-orchestration)
-   3. [Technology](#13-technology)
-      1. [Lakehouse (Minio + Trino + Hive + PostgreSQL + Terraform)](#131-lakehouse)
-      2. [Ingestion (CDC, Batch ingestion)](#132)
-      3. [Orchestration (Airflow)]()
-      4. [Batch processing (PySpark on k8s)]()
-      5. [Stream processing (Flink)]()
-      6. [Feature store (Feast)]()
+1. [Overall data architecture](#11-overall-data-architecture)
+2. [Approach and concepts](#12-approach-and-concepts)
+      1. [Data source](#121-data-source)
+      2. [Data lake house architecture](#122-data-lake-house-architecture)
+      3. [Stream and batch ingestion](#123-stream-and-batch-ingestion)
+      4. [Stream and batch processing](#124-stream-and-batch-processing)
+      5. [Pipeline orchestration](#125-pipeline-orchestration)
+3. [Technology](#13-technology)
+   1. [Lakehouse (Minio + Trino + Hive + PostgreSQL)](#131-lakehouse)
+   2. [Ingestion (CDC, Batch ingestion)](#132)
+   3. [Orchestration (Airflow)]()
+   4. [Batch processing (PySpark)]()
+   5. [Stream processing (Flink)]()
+   6. [Feature store (Feast)]()
 
-2. Training pipeline
-3. Serving pipeline
-
-## 1. Data pipeline
 ### 1.1. Overall data architecture
 <p align="center">
   <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/data_architecture.png" />
@@ -66,9 +66,6 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
 ### 1.3. Technology
 #### 1.3.1. Lakehouse
 - The technology stacks that i used to build a data lakehouse are:
-   - Deploying Minio on k8s has several advantages:
-      - **Availability**: The data inside Minio can be stored on multiple nodes ensuring the failure of one node does not affect the entire system.
-      - **Scalability**: k8s supports both pod and node scaling, you can choose any method that suits your problem.
    - **Trino**: This is a distributed computing engine that works pretty well in data lakehouse architecture due to its **scalability**, it supports both horizontal (by adding more worker nodes) and vertical (adding more resources to each worker node) scaling. By using multiple worker nodes, it helps to handle requests with **low-latency**.
       - Trino architecture:
         <p align="center">
@@ -76,135 +73,64 @@ In this repo, I use a **Hybrid ingestion** model to load data from data source t
          </p>
    - **Hive metastore**: A service that stores metadata for Hive tables (like table schema)
    - **PostgreSQL**: This is the database backend for the Hive Metastore. It's where the metadata is actually stored.
-   - **Terraform**: A tool to build up GKE.
-   - My setup will include:
-     - For **trino**: 1 coordinator and 2 worker nodes
-     - For **minio**: 1 tenant pool with 2 pods, each pod has two volumes for storing data.
 
-**NOTE**: If you want to **add more tenants**, just create a new namespace as two tenants cannot live in the same namespace, then redo *step 10 till the end*
-
-**How to guide 📖**
-- **Step 1**: Create a [project](https://console.cloud.google.com/projectcreate)
-- **Step 2**: Install Cloud CLI by following one of these document
-   - For Mac: https://cloud.google.com/sdk/docs/install#mac
-   - For Ubuntu: https://cloud.google.com/sdk/docs/install#deb
-   - For Windows: https://cloud.google.com/sdk/docs/install#windows
-- **Step 3**: Initialize the Google Cloud CLI
-  - Check if the Google Cloud CLI is installed successfully.
-   ``` bash
-   gcloud -v
-   ```
-   - Initialize gcloud by running
-   ``` bash
-   gcloud init
-   Y
-   ```
-   - Pick you cloud project then type Enter.
-- **Step 4**: Install gke-cloud-auth-plugin
-   ``` bash
-   gcloud components install gke-gcloud-auth-plugin
-   ```
-- **Step 5**: Create service account
-   - Create your [service account](https://console.cloud.google.com/iam-admin/serviceaccounts), and select `Kubernetes Engine Admin` role therefore you will have full management of Kubernetes Cluster and their Kubernetes API object for your service account.
-   - Create new key as json type for your service account. Download this json file and save it in terraform directory. Update `credentials` in `terraform/main.tf` with your json directory.
-     <p align="center">
-        <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/service_account_key.png" />
-      </p>
-- **Step 6**: Add permission for the project
-   - Go to [IAM](https://console.cloud.google.com/iam-admin/iam), click on `GRANT ACCESS`, then add new principals, this principal is your service account created in step 5. Finally, select `Owner` role.
-- **Step 7**: Installing [Terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
-- **Step 8**: Using Terraform to create GKE cluster
-   - Change the default value of variable `project_id` in `terraform/variables.tf` with your project id on Google Cloud. Then run the following command to create GKE cluster:
-   ``` bash
-   gcloud auth application-default login
-   ```
-   ``` bash
-   cd terraform
-   terraform init
-   terraform plan
-   terraform apply
-   ```
-   - After you run these command lines, you will see the GKE cluster is deployed at **asia-southeast1** with its node machine type is: **e2-standard-4 (4 vCPU, 2 core, 16 GB RAM and costs $105.84/1month)**. You can change these settings in `terraform/variables.tf` to your desired setting.
-   - Remember not to set `enable_autopilot=true` in `terraform/main.tf` as Prometheus service cannot scrape node metrics from Autopilot cluster.
-
-- **Step 9**: Connect to GKE cluster
-   - After the cluster was created successfully, click on your cluster and select **Connect** button. Then copy and paste the **Command-line access** into you terminal.
-   - You can check the connection by using this command
-   ``` bash
-   alias k=kubectl
-   k get nodes
-   ```
-- **Step 10**: Deploy on GKE using Helm chart
-   - **Installation**:
-     - For Windows, you can download directly from this [link](https://github.com/helm/helm/releases) then extract and add to Environment Variables
-     - For other OS, please follow this [link](https://helm.sh/docs/intro/install/)
-   - **Additional Installation**:
-     - Following this [guide](https://krew.sigs.k8s.io/docs/user-guide/setup/install/) to install krew
-     - Install minio plugin for kubectl by running this command:
-       ``` bash
-       kubectl krew install minio
-       ```
-   - **Usage**:
-     - Run the script below to deploy lakehouse into GKE
-        ``` bash
-        bash up.sh
-        ```
-     - The result should look like this when you run `kubectl get pods -n <YOUR_NAMESPACE>`
-       <p align="center">
-           <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/deploy_lakehouse.png" />
-       </p>
-     - You can view trino UI by running these command:
-       ``` bash
-       export POD_NAME=$(kubectl get pods --namespace trino -l "app=trino,release=my-trino,component=coordinator" -o jsonpath="{.items[0].metadata.name}")
-       kubectl port-forward $POD_NAME 8080:8080
-       ```
-       <p align="center">
-           <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/trino_ui.png" />
-       </p>
 #### 1.3.2. Ingestion
-- The technology that i use to streamline data is Kafka
+- The technology that I use to streamline data is Kafka
 - In my problem, i will define Kafka's concepts like below:
    - **Consumer**: Minio
    - **Producer**: Debezium which captures changes from PostgreSQL data source and publishes events to Kafka
    - To avoid rebalance (when a consumer group adds or removes consumers (scale), the partitions will be reassigned / rebalanced to all other consumers which causes the system a lagged interval.,) a good practice is to set the number of partitions equal to the number of pods in your cluster like in this setting.
  
+#### 1.3.3. Orchestration
+- The technology that I use for scheduling pipeline is Airflow.
+- There are three main reasons that makes Airflow outperform Cronjob:
+   - Airflow supports UI management system that helps user better to visualize triggered pipeline
+   - While Cronjob only runs on a single virtual machine, Airflow can trigger multiple pipelines on multiple VMs.
+   - Airflow helps to manage the order of tasks.
+- There are two pipelines in this repo:
+   - Batch ingestion: Ingest data from data source to Minio
+   - Batch processing: Process data from data warehouse to feature store
 
-## Installation and Usage for training purpose only:
-- **Step 1**: Install and create conda environment
-    - Required Python >= 3.10
-    - For **Windows**: Strictly follow this repo https://github.com/conda-forge/miniforge
-    - For MacOS, run the following command:
-        ```bash
-        brew install miniforge
-        ```
-    - Then:
-        ```bash
-        conda create -n <REPLACE_THIS_WITH_YOUR_DESIRED_NAME> python==3.12
-        conda activate 
-        ```
-- **Step 2**: Install prerequisite packages
-    ```
-    pip install -e .
-    ```
+#### 1.3.4. Batch processing
 
-- Run CDC
-```bash
-cd data
-docker compose -f cdc-docker-compose.yaml up -d
-bash source_registration.sh register_connector configs/source-connector.json
-```
-- Test connection
-```bash
-cd utils
-python create_table.py
-python insert_to_source.py
-```
-- Spark
-```bash
-docker build -f spark.dockerfile -t <image_name:tag> .
-docker compose -f spakr-docker-compose.yaml up -d
-```
+## Installation and setup:
+- **Step 1**: Start everything
+   - With build:
+      ```bash
+      make up
+      ```
+   - Without build:
+      ```bash
+      make up-without-build
+      ```
+   - Shutdown all containers:
+      ```bash
+      make down
+      ```
+   
+- **Step 2**: Install and create conda environment for training locally
+   - Required Python >= 3.11
+   - For **Windows**: Strictly follow this repo https://github.com/conda-forge/miniforge
+   - For MacOS, run the following command:
+      ```bash
+      brew install miniforge
+      ```
+   - Then:
+      ```bash
+      conda create -n <REPLACE_THIS_WITH_YOUR_DESIRED_NAME> python==3.11
+      conda activate 
+      ```
+- **Step 3**: Install DBeaver by following this [guide](https://dbeaver.io/download/)
 
-- run source: docker compose -f source/docker-compose.yaml up -d
-- run migrate: npx prisma migrate dev --name
-- run prisma studio: npx prisma studio
+## Usage:
+- Go to Minio UI that runs on `http://localhost:9001` to create bucket named `my-bucket`
+   <p align="center">
+      <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/create_minio_bucket.png" />
+   </p>
+- Go to Airflow webserver that is hosted on  `http://localhost:8082` and trigger batch ingestion pipeline.
+   <p align="center">
+      <img src="https://github.com/duongnguyen-dev/AutoMLFlow/blob/main/assets/trigger_batch_ingestion.png" />
+   </p> 
+- On DBeaver, copy and run SQL on folder `scripts` in the following order:
+   - `create_schema.sql` -> `create_table.sql` -> `test.sql`
+- Trigger `loan_etl` pipeline

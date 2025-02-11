@@ -1,0 +1,1 @@
+SELECT * FROM mle.my_bucket.loan

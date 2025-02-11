@@ -3,3 +3,4 @@ apache-airflow==2.7.1
 apache-airflow-providers-postgres==5.6.1
 airflow-provider-great-expectations==0.2.6
 loguru==0.7.3
+trino==0.333.0
